@@ -1,0 +1,10 @@
+apps:
+  - name: wifi-dpp
+    selects:
+      - log
+      - network
+      - random
+      # pick the corresponding wifi driver
+      # NOTE: currently only wifi-esp is supported
+      - wifi-esp
+      # - wifi-cyw43

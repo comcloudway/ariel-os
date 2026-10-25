@@ -45,6 +45,7 @@ esp-sync = { workspace = true, optional = true }
 fugit = { workspace = true, optional = true }
 paste = { workspace = true }
 static_cell = { workspace = true }
+wifi-dpp = { workspace = true }
 
 # BLE dependencies
 bt-hci = { workspace = true, optional = true }
@@ -179,6 +180,8 @@ wifi-esp = [
   "esp-radio?/wifi",
   "wifi",
 ]
+
+wifi-dpp = ["wifi-esp", "esp-radio/sniffer", "ariel-os-random/csprng"]
 
 ## Enables facilities required by the built-in Wi-Fi and/or BLE radio.
 _radio-esp = [

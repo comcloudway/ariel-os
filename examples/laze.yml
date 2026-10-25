@@ -40,3 +40,4 @@ subdirs:
   - usb-keyboard
   - usb-serial
   - usb-serial-logger
+  - wifi-dpp

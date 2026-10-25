@@ -208,6 +208,8 @@ futures-util = { version = "0.3.32", default-features = false }
 nrf-modem = { version = "0.11.0" }
 tinyrlibc = "0.5.0"
 
+wifi-dpp = { path = "../wifi-dpp-rs", features=["async"] }
+
 [workspace.lints.rust]
 # rustc lints are documented here: https://doc.rust-lang.org/rustc/lints/listing/index.html
 private_interfaces = "deny"
