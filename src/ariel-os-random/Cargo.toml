@@ -8,6 +8,8 @@ license.workspace = true
 
 [dependencies]
 rand-core-06 = { package = "rand_core", version = "0.6" }
+rand-core-10 = { package = "rand_core", version = "0.10.0" }
+
 rand_core = { workspace = true }
 
 embassy-sync = { workspace = true }

@@ -157,6 +157,8 @@ pub struct CryptoRng {
 
 #[cfg(feature = "csprng")]
 mod csprng {
+    use core::convert::Infallible;
+
     use super::{CryptoRng, RngCore, SelectedRng, with_global};
 
     // Re-implementing the trait rather than Deref'ing into inner: This avoids leaking implementation
@@ -189,8 +191,24 @@ mod csprng {
         }
     }
 
+    impl rand_core_10::TryRng for CryptoRng {
+        type Error = Infallible;
+
+        fn try_next_u32(&mut self) -> Result<u32, Infallible> {
+            Ok(with_global(RngCore::next_u32))
+        }
+        fn try_next_u64(&mut self) -> Result<u64, Infallible> {
+            Ok(with_global(RngCore::next_u64))
+        }
+        fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Infallible> {
+            with_global(|i| i.fill_bytes(dest));
+            Ok(())
+        }
+    }
+
     impl rand_core::CryptoRng for super::CryptoRng {}
     impl rand_core_06::CryptoRng for super::CryptoRng {}
+    impl rand_core_10::TryCryptoRng for super::CryptoRng {}
 
     /// Asserts that [`SelectedRng`] is [`CryptoRng`], justifying the implementation above.
     trait _AssertCryptoRng: rand_core::CryptoRng {}
