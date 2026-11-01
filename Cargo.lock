@@ -334,6 +334,7 @@ dependencies = [
  "esp-rom-sys",
  "esp-sync",
  "fugit",
+ "p256 0.14.0",
  "paste",
  "portable-atomic",
  "static_cell",
@@ -2147,6 +2148,7 @@ dependencies = [
  "const-oid 0.10.2",
  "der_derive",
  "heapless 0.9.3",
+ "pem-rfc7468",
  "time",
  "zeroize",
 ]
@@ -2340,6 +2342,7 @@ dependencies = [
  "group 0.14.0",
  "hkdf 0.13.0",
  "hybrid-array",
+ "pem-rfc7468",
  "pkcs8 0.11.0",
  "rand_core 0.10.1",
  "sec1 0.8.1",
@@ -5399,6 +5402,15 @@ name = "peg-runtime"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "132dca9b868d927b35b5dd728167b2dee150eb1ad686008fc71ccb298b776fca"
+
+[[package]]
+name = "pem-rfc7468"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a6305423e0e7738146434843d1694d621cce767262b2a86910beab705e4493d9"
+dependencies = [
+ "base64ct",
+]
 
 [[package]]
 name = "percent-encoding"

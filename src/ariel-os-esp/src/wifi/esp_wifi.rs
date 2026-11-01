@@ -30,9 +30,18 @@ pub fn init(peripherals: &mut crate::OptionalPeripherals, spawner: Spawner) -> N
 
         if wifi_ssid.is_none() {
             let mut rng = random::crypto_rng();
+
+            #[cfg(feature = "wifi-dpp-pem")]
+            let private_key =
+                p256::SecretKey::from_sec1_pem(include_str!(env!("WIFI_DPP_PEM_FILE")))
+                    .expect("Loaded PEM file should be valid");
+
+            #[cfg(not(feature = "wifi-dpp-pem"))]
             let private_key = wifi_dpp::generate_private_key(&mut rng);
+
             let bootstrapping_information =
                 BootstrappingInformation::from_private_key(private_key).unwrap();
+
             info!(
                 "DPP provisioning payload: '{}'",
                 bootstrapping_information

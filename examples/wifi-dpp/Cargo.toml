@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 ariel-os = { path = "../../src/ariel-os", features = ["time"] }
 ariel-os-boards = { path = "../../src/ariel-os-boards" }
-ariel-os-esp = { path = "../../src/ariel-os-esp", features = ["wifi-dpp"] }
+ariel-os-esp = { path = "../../src/ariel-os-esp", features = ["wifi-dpp", "wifi-dpp-pem"] }
 
 wifi-dpp = { path = "../../../wifi-dpp-rs", features=["platform-esp", "async"] }
 
