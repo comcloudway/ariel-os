@@ -14,8 +14,7 @@ async fn main() {
     );
 
     loop {
-        Timer::after_secs(5).await;
-        info!("Main still alive");
+        info!("Waiting for network connection");
         if let Some(stack) = ariel_os::net::network_stack().await {
             let link_is_up = stack.is_link_up();
             info!("Link is up: {:?}", link_is_up);
@@ -23,6 +22,7 @@ async fn main() {
                 break;
             }
         }
+        Timer::after_secs(5).await;
     }
 
     exit(ExitCode::SUCCESS);

@@ -4,6 +4,7 @@ apps:
       - log
       - network
       - random
+      - sw/storage
       # pick the corresponding wifi driver
       # NOTE: currently only wifi-esp is supported
       - wifi-esp

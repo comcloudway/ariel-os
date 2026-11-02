@@ -192,6 +192,18 @@ fn init() {
         .run(|spawner| spawner.spawn(init_task(p).unwrap()));
 }
 
+#[cfg(feature = "storage")]
+extern crate alloc;
+#[cfg(feature = "storage")]
+use alloc::{boxed::Box, string::String};
+#[cfg(feature = "storage")]
+fn update_wifi_credentials(ssid: String, pass: String) {
+    embassy_futures::block_on(async {
+        let _ = ariel_os_storage::insert::<String>("wifi-ssid", ssid).await;
+        let _ = ariel_os_storage::insert::<String>("wifi-pass", pass).await;
+    });
+}
+
 /// Main Ariel OS async system setup function
 ///
 /// # Panics
@@ -351,7 +363,24 @@ async fn init_task(mut peripherals: hal::OptionalPeripherals) {
     ble::init_stack(ble_controller, spawner);
 
     #[cfg(feature = "wifi-esp")]
-    let device = hal::wifi::esp_wifi::init(&mut peripherals, spawner);
+    let device = {
+        #[cfg(not(feature = "storage"))]
+        let credentials = None;
+
+        #[cfg(feature = "storage")]
+        let credentials = Some((
+            ariel_os_storage::get::<String>("wifi-ssid").await.unwrap(),
+            ariel_os_storage::get::<String>("wifi-pass").await.unwrap(),
+        ));
+
+        #[cfg(not(feature = "storage"))]
+        let update_func = None;
+
+        #[cfg(feature = "storage")]
+        let update_func = Some(update_wifi_credentials as fn(String, String));
+
+        hal::wifi::esp_wifi::init(&mut peripherals, spawner, credentials, update_func)
+    };
 
     #[cfg(feature = "tuntap")]
     let device = crate::hal::tuntap::create();

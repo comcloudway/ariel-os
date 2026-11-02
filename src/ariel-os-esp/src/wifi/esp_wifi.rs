@@ -12,21 +12,33 @@ use wifi_dpp::platform::esp::EspDppRunner;
 #[cfg(feature = "wifi-dpp")]
 use wifi_dpp::{self, BootstrappingInformation, DppManager};
 
+#[cfg(feature = "wifi-dpp")]
+use alloc::boxed::Box;
+
 use ariel_os_log::error;
 
 pub type NetworkDevice = Interface<'static>;
 
-pub fn init(peripherals: &mut crate::OptionalPeripherals, spawner: Spawner) -> NetworkDevice {
+pub fn init(
+    peripherals: &mut crate::OptionalPeripherals,
+    spawner: Spawner,
+    credentials: Option<(Option<String>, Option<String>)>,
+    update_credentials: Option<fn(String, String)>,
+) -> NetworkDevice {
     let config = ControllerConfig::default();
     let wifi = peripherals.WIFI.take().unwrap();
 
     // (swallowing the `WifiError` here, it pulls in quite a bit of fmt code.)
+    info!("Starting wifi interface");
     let (controller, interfaces) = esp_radio::wifi::new(wifi, config).ok().unwrap();
 
     #[cfg(feature = "wifi-dpp")]
     {
-        // TODO: read from persisted storage
-        let (wifi_ssid, wifi_pass) = (None, None);
+        let (wifi_ssid, wifi_pass) = if let Some(credentials) = credentials {
+            (credentials.0, credentials.1)
+        } else {
+            (None, None)
+        };
 
         if wifi_ssid.is_none() {
             let mut rng = random::crypto_rng();
@@ -55,10 +67,12 @@ pub fn init(peripherals: &mut crate::OptionalPeripherals, spawner: Spawner) -> N
                     controller,
                     bootstrapping_information,
                     interfaces.sniffer,
+                    update_credentials,
                 )
                 .unwrap(),
             );
         } else {
+            info!("Skipping DPP protocol, as we already have credentials");
             spawner.spawn(
                 connection(
                     controller,
@@ -72,6 +86,7 @@ pub fn init(peripherals: &mut crate::OptionalPeripherals, spawner: Spawner) -> N
 
     #[cfg(not(feature = "wifi-dpp"))]
     {
+        info!("Connection to wifi network with credentials provided via env vars");
         let (wifi_ssid, wifi_pass) = (
             crate::wifi::WIFI_NETWORK.try_into().unwrap(),
             crate::wifi::WIFI_PASSWORD.try_into().unwrap(),
@@ -90,6 +105,7 @@ async fn dpp_connection(
     mut controller: WifiController<'static>,
     bootstrapping_information: BootstrappingInformation,
     sniffer: Sniffer<'static>,
+    update_credentials: Option<fn(String, String)>,
 ) {
     info!("wifi-dpp enabled and no credentials present, engaging for one minute to obtain data");
     let esp_runner = EspDppRunner::try_init(sniffer).unwrap();
@@ -115,7 +131,10 @@ async fn dpp_connection(
             info!("[DPP]: Received Wifi credentials");
             let wifi_ssid = c.discovery.ssid;
             let wifi_pass = c.credentials.pass.unwrap_or(String::new());
-            // TODO: persist credentials
+            if let Some(update_credentials) = update_credentials {
+                info!("Storing credentials received via DPP");
+                //update_credentials(wifi_ssid.clone(), wifi_pass.clone());
+            }
             // handover to connection with credentials
             spawner.spawn(connection(controller, wifi_ssid, wifi_pass).unwrap());
         }

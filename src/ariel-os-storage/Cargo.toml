@@ -14,10 +14,12 @@ embassy-sync = { workspace = true }
 embedded-storage-async = { workspace = true }
 postcard = { version = "1.0.8", features = ["postcard-derive"] }
 sequential-storage = { version = "6.0.1", features = ["arrayvec"] }
-serde = { workspace = true, default-features = false }
+serde = { workspace = true, default-features = false, features = ["alloc"] }
 
 [target.'cfg(context = "rp")'.dependencies]
 embassy-time = { workspace = true, default-features = false }
+
+[features]
 
 [lints]
 workspace = true
