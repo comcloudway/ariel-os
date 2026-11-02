@@ -12,6 +12,7 @@
 mod postcard_value;
 mod storage;
 
+#[cfg(not(context = "esp"))]
 use core::ops::Range;
 
 use ariel_os_hal::hal::{
@@ -37,6 +38,7 @@ const MARKER_VALUE: u8 = 0;
 /// This function is also the place to configure a platform dependent `OFFSET`,
 /// which configures an offset between the linker flash address map and the
 /// flash driver address map.
+#[cfg(not(context = "esp"))]
 fn flash_range_from_linker() -> Range<u32> {
     #[cfg(all(context = "nrf", not(context = "nrf5340-net")))]
     const OFFSET: usize = 0x0;
@@ -64,12 +66,19 @@ fn flash_range_from_linker() -> Range<u32> {
     start..end
 }
 
+#[cfg(not(context = "esp"))]
 fn init_(p: &mut OptionalPeripherals) {
     use ariel_os_log::info;
     let flash_range = flash_range_from_linker();
     info!("storage: using flash range {:?}", &flash_range);
 
     let flash = flash_init(p);
+    let _ = STORAGE.init(Mutex::new(Storage::new(flash, flash_range)));
+}
+
+#[cfg(context = "esp")]
+fn init_(p: &mut OptionalPeripherals) {
+    let (flash, flash_range) = flash_init(p);
     let _ = STORAGE.init(Mutex::new(Storage::new(flash, flash_range)));
 }
 

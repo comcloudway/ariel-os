@@ -27,6 +27,9 @@ fn main() {
     } else if !is_in_current_contexts(&["ariel-os"]) {
         // Dummy value for platform-independent tooling.
         (8 * KIBIBYTES, 4 * KIBIBYTES)
+    } else if is_in_current_contexts(&["esp"]) {
+        // we don't need this on esp
+        return;
     } else {
         panic!("MCU not supported");
     };

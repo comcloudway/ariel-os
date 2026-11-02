@@ -332,6 +332,7 @@ dependencies = [
  "esp-radio",
  "esp-radio-rtos-driver",
  "esp-rom-sys",
+ "esp-storage",
  "esp-sync",
  "fugit",
  "p256 0.14.0",
@@ -3063,7 +3064,7 @@ dependencies = [
  "document-features",
  "embedded-storage",
  "esp-config",
- "esp-hal-procmacros",
+ "esp-hal-procmacros 0.22.0 (git+https://github.com/ariel-os/esp-hal?rev=ce9bcf390ab6b7abc8ae3bc4989360a493c354e7)",
  "esp-metadata-generated",
  "esp-rom-sys",
  "jiff",
@@ -3110,7 +3111,7 @@ dependencies = [
  "embedded-io-async 0.7.0",
  "enumset",
  "esp-config",
- "esp-hal-procmacros",
+ "esp-hal-procmacros 0.22.0 (git+https://github.com/ariel-os/esp-hal?rev=ce9bcf390ab6b7abc8ae3bc4989360a493c354e7)",
  "esp-metadata-generated",
  "esp-riscv-rt",
  "esp-rom-sys",
@@ -3142,6 +3143,20 @@ dependencies = [
  "ufmt-write",
  "xtensa-lx",
  "xtensa-lx-rt",
+]
+
+[[package]]
+name = "esp-hal-procmacros"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6aebfabb2c21bec45e575e4f6cb6bb7aa8e1b33e7ac45b5dffa0f9d33ff59105"
+dependencies = [
+ "document-features",
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.114",
+ "termcolor",
 ]
 
 [[package]]
@@ -3227,7 +3242,7 @@ dependencies = [
  "esp-alloc",
  "esp-config",
  "esp-hal",
- "esp-hal-procmacros",
+ "esp-hal-procmacros 0.22.0 (git+https://github.com/ariel-os/esp-hal?rev=ce9bcf390ab6b7abc8ae3bc4989360a493c354e7)",
  "esp-metadata-generated",
  "esp-phy",
  "esp-radio-rtos-driver",
@@ -3296,6 +3311,21 @@ dependencies = [
  "esp32h2",
  "esp32s2",
  "esp32s3",
+]
+
+[[package]]
+name = "esp-storage"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4cf2b3f00c9f94b27c62a4f5296b19470c3a083c687c8146e554a459f9bee596"
+dependencies = [
+ "document-features",
+ "embedded-storage",
+ "esp-hal",
+ "esp-hal-procmacros 0.22.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "esp-metadata-generated",
+ "esp-rom-sys",
+ "esp-sync",
 ]
 
 [[package]]
