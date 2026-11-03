@@ -78,7 +78,9 @@ fn init_(p: &mut OptionalPeripherals) {
 
 #[cfg(context = "esp")]
 fn init_(p: &mut OptionalPeripherals) {
+    use ariel_os_log::info;
     let (flash, flash_range) = flash_init(p);
+    info!("storage: using flash range {:?}", &flash_range);
     let _ = STORAGE.init(Mutex::new(Storage::new(flash, flash_range)));
 }
 

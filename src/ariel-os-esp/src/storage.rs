@@ -13,19 +13,8 @@ pub fn init(p: &mut OptionalPeripherals) -> (Flash, Range<u32>) {
         p.FLASH.take().expect("Storage crate requires flash access"),
     );
 
-    let mut pt_mem = [0u8; partitions::PARTITION_TABLE_MAX_LEN];
-
-    let pt = partitions::read_partition_table(&mut flash, &mut pt_mem).unwrap();
-
-    let nvs = pt
-        .find_partition(partitions::PartitionType::Data(
-            partitions::DataPartitionSubType::Nvs,
-        ))
-        .unwrap()
-        .unwrap();
-
-    let nvs_begin = nvs.offset();
-    let nvs_end = nvs_begin + nvs.len();
+    let nvs_begin = 0x9000;
+    let nvs_end = nvs_begin + 0x6000;
 
     (BlockingAsync::new(flash), nvs_begin..nvs_end)
 }
