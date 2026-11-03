@@ -31,6 +31,7 @@ pub fn init(
     // (swallowing the `WifiError` here, it pulls in quite a bit of fmt code.)
     info!("Starting wifi interface");
     let (controller, interfaces) = esp_radio::wifi::new(wifi, config).ok().unwrap();
+    info!("Initialized interface");
 
     #[cfg(feature = "wifi-dpp")]
     {
@@ -133,7 +134,7 @@ async fn dpp_connection(
             let wifi_pass = c.credentials.pass.unwrap_or(String::new());
             if let Some(update_credentials) = update_credentials {
                 info!("Storing credentials received via DPP");
-                //update_credentials(wifi_ssid.clone(), wifi_pass.clone());
+                update_credentials(wifi_ssid.clone(), wifi_pass.clone());
             }
             // handover to connection with credentials
             spawner.spawn(connection(controller, wifi_ssid, wifi_pass).unwrap());
